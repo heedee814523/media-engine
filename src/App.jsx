@@ -79,7 +79,7 @@ const App = () => {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">M</span>
             </div>
             <span className="font-bold text-xl tracking-tight text-slate-900">MEDIA ENGINE</span>
@@ -275,7 +275,7 @@ const App = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center space-x-2 mb-6">
-                <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+                <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center">
                   <span className="text-white font-bold text-xs">M</span>
                 </div>
                 <span className="font-bold text-lg">MEDIA ENGINE</span>
