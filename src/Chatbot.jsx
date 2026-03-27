@@ -64,7 +64,10 @@ const Chatbot = () => {
 
       const chat = ai.chats.create({
         model: 'gemini-2.0-flash',
-        config: { systemInstruction: SYSTEM_PROMPT },
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          tools: [{ googleSearch: {} }],
+        },
         history,
       });
 
