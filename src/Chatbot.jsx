@@ -84,16 +84,17 @@ const Chatbot = () => {
         }
       }
     } catch (error) {
-      console.error('Chatbot error:', error);
-      console.error('Error name:', error?.name);
-      console.error('Error message:', error?.message);
-      console.error('Error status:', error?.status);
-      console.error('Error details:', JSON.stringify(error, null, 2));
+      const errorDetails = [
+        `[name] ${error?.name ?? 'unknown'}`,
+        `[message] ${error?.message ?? String(error)}`,
+        `[status] ${error?.status ?? '-'}`,
+        `[stack] ${error?.stack ?? '-'}`,
+      ].join('\n');
       setMessages(prev => {
         const updated = [...prev];
         updated[updated.length - 1] = {
           role: 'model',
-          content: `エラーが発生しました。\n${error?.message || String(error)}`,
+          content: `エラーが発生しました。\n\n${errorDetails}`,
         };
         return updated;
       });
