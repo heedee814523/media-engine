@@ -161,7 +161,10 @@ const Chatbot = () => {
             <div className="flex items-center space-x-2">
               <input
                 ref={inputRef}
+                id="chatbot-input"
+                name="chatbot-input"
                 type="text"
+                autoComplete="off"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
