@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import { MessageSquare, X, Send, Bot } from 'lucide-react';
 
-const client = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_API_KEY });
 
 const SYSTEM_PROMPT = `あなたはMEDIA ENGINEのAIアシスタントです。
 MEDIA ENGINEは、メディア事業とマーケティングソリューション事業を展開する会社です。
@@ -25,7 +22,7 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
-      role: 'assistant',
+      role: 'model',
       content: 'こんにちは！MEDIA ENGINEのAIアシスタントです。サービスや事業内容についてご質問があればお気軽にどうぞ。',
     },
   ]);
@@ -53,39 +50,42 @@ const Chatbot = () => {
     setInput('');
     setIsStreaming(true);
 
-    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+    setMessages(prev => [...prev, { role: 'model', content: '' }]);
 
     try {
-      const apiMessages = newMessages.map(m => ({
+      // Gemini のフォーマットに変換（初期挨拶メッセージを除く）
+      const history = newMessages.slice(0, -1).map(m => ({
         role: m.role,
-        content: m.content,
+        parts: [{ text: m.content }],
       }));
 
-      const stream = client.messages.stream({
-        model: 'claude-haiku-4-5',
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: apiMessages,
+      const chat = ai.chats.create({
+        model: 'gemini-2.0-flash',
+        config: { systemInstruction: SYSTEM_PROMPT },
+        history,
       });
 
-      stream.on('text', (delta) => {
-        setMessages(prev => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: 'assistant',
-            content: updated[updated.length - 1].content + delta,
-          };
-          return updated;
-        });
-      });
+      const stream = await chat.sendMessageStream({ message: userMessage.content });
 
-      await stream.finalMessage();
+      for await (const chunk of stream) {
+        const delta = chunk.text;
+        if (delta) {
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              role: 'model',
+              content: updated[updated.length - 1].content + delta,
+            };
+            return updated;
+          });
+        }
+      }
     } catch (error) {
       console.error('Chatbot error:', error);
       setMessages(prev => {
         const updated = [...prev];
         updated[updated.length - 1] = {
-          role: 'assistant',
+          role: 'model',
           content: 'エラーが発生しました。しばらくしてから再試行してください。',
         };
         return updated;
