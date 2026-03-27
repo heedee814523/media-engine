@@ -85,11 +85,15 @@ const Chatbot = () => {
       }
     } catch (error) {
       console.error('Chatbot error:', error);
+      console.error('Error name:', error?.name);
+      console.error('Error message:', error?.message);
+      console.error('Error status:', error?.status);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       setMessages(prev => {
         const updated = [...prev];
         updated[updated.length - 1] = {
           role: 'model',
-          content: 'エラーが発生しました。しばらくしてから再試行してください。',
+          content: `エラーが発生しました。\n${error?.message || String(error)}`,
         };
         return updated;
       });
