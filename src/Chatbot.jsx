@@ -53,11 +53,14 @@ const Chatbot = () => {
     setMessages(prev => [...prev, { role: 'model', content: '' }]);
 
     try {
-      // Gemini のフォーマットに変換（初期挨拶メッセージを除く）
-      const history = newMessages.slice(0, -1).map(m => ({
-        role: m.role,
-        parts: [{ text: m.content }],
-      }));
+      // Gemini のフォーマットに変換（初期挨拶を除き、userから始まるペアのみ渡す）
+      const history = newMessages
+        .slice(0, -1)
+        .filter((_, idx) => idx > 0)
+        .map(m => ({
+          role: m.role,
+          parts: [{ text: m.content }],
+        }));
 
       const chat = ai.chats.create({
         model: 'gemini-2.0-flash',
