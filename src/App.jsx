@@ -10,6 +10,7 @@ import {
   MessageSquare,
   ArrowUpRight
 } from 'lucide-react';
+import Chatbot from './Chatbot';
 
 const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -268,6 +269,9 @@ const App = () => {
           </div>
         </div>
       </section>
+
+      {/* Chatbot */}
+      <Chatbot />
 
       {/* Footer */}
       <footer className="bg-white pt-20 pb-10 border-t border-slate-100">
